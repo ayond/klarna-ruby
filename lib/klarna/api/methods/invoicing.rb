@@ -21,7 +21,9 @@ module Klarna
           country = ::Klarna::API.id_for(:country, country)
           language = ::Klarna::API.id_for(:language, language)
           pno_encoding = ::Klarna::API.id_for(:pno_format, pno_encoding)
-          pclass = pclass ? ::Klarna::API.id_for(:pclass, pclass) : -1
+          if not pclass.is_a? Fixnum
+            pclass = pclass ? ::Klarna::API.id_for(:pclass, pclass) : -1
+          end
           flags = ::Klarna::API.parse_flags(:INVOICE, flags)
           articles = Array.wrap(articles).compact
 
