@@ -224,6 +224,12 @@ describe Klarna::API::Client do
         
         assert args.first.encoding.to_s == 'ISO-8859-1', "Encoding: #{args.first.encoding}"
       end
+
+      it 'should handle characters undefined in iso-8859-1' do
+        args = [ "\u2013".force_encoding('utf-8')]
+        @client.encode_parameters(args)
+        assert_equal "-", args.first
+      end
     end
 
     describe '#digest' do

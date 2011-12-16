@@ -160,7 +160,8 @@ module Klarna
 
       def encode(string, from_encoding = 'utf-8')
         if string.respond_to?(:encode)
-          string.encode(::Klarna::API::PROTOCOL_ENCODING, from_encoding)
+          string.encode(::Klarna::API::PROTOCOL_ENCODING, from_encoding, :undef => :replace,
+                        :replace => "-")
         else
           ::Iconv.conv(::Klarna::API::PROTOCOL_ENCODING, from_encoding, string)
         end
