@@ -93,7 +93,7 @@ module Klarna
           goods = {
             :goods => {
               :artno     => article_no,
-              :title     => title,
+              :title     => ::Klarna::API.encode(title),
               :price     => price.to_i,
               :vat       => vat.to_f.round(2),
               :discount  => discount.to_f.round(2),

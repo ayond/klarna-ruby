@@ -20,7 +20,7 @@ describe Klarna::API::Methods::Invoicing do
     @order_items = []
     @order_items << @klarna.make_goods(1, 'ABC1', "T-shirt 1", 1.00 * 100, 25, 0, :INC_VAT => true)
     @order_items << @klarna.make_goods(3, 'ABC2', "T-shirt 2", 7.00 * 100, 25, 0, :INC_VAT => true)
-    @order_items << @klarna.make_goods(7, 'ABC3', "T-shirt 3", 17.00 * 100, 25, 0, :INC_VAT => true)
+    @order_items << @klarna.make_goods(7, 'ABC3', "T\u2013shirt 3", 17.00 * 100, 25, 0, :INC_VAT => true)
     @order_items_total = (1 * (1.00 * 100) + 3 * (7.00 * 100) + 7 * (17.00 * 100)).to_i
 
     @address_SE = @klarna.make_address("c/o Lidin", "Junibackg. 42", "23634", "Höllviken", :SE, "076 526 00 00", "076 526 00 00", "karl.lidin@klarna.com")
