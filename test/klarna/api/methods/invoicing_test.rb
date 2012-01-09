@@ -20,7 +20,7 @@ describe Klarna::API::Methods::Invoicing do
     @order_items = []
     @order_items << @klarna.make_goods(1, 'ABC1', "T-shirt 1", 1.00 * 100, 25, 0, :INC_VAT => true)
     @order_items << @klarna.make_goods(3, 'ABC2', "T-shirt 2", 7.00 * 100, 25, 0, :INC_VAT => true)
-    @order_items << @klarna.make_goods(7, 'ABC3', "T\u2013shirt 3", 17.00 * 100, 25, 0, :INC_VAT => true)
+    @order_items << @klarna.make_goods(7, 'ABC3', "T-shirt 3", 17.00 * 100, 25, 0, :INC_VAT => true)
     @order_items_total = (1 * (1.00 * 100) + 3 * (7.00 * 100) + 7 * (17.00 * 100)).to_i
 
     @address_SE = @klarna.make_address("c/o Lidin", "Junibackg. 42", "23634", "Höllviken", :SE, "076 526 00 00", "076 526 00 00", "karl.lidin@klarna.com")
@@ -46,6 +46,22 @@ describe Klarna::API::Methods::Invoicing do
       it 'should accept shortcut arguments for: shipment_type, currency, country, language, pno_encoding' do
         invoice_no = @klarna.add_invoice(
           'USER-4304158399', 'ORDER-1', @order_items, 0, 0, :NORMAL, '4304158399', 'Karl', 'Lidin', @address_SE, '85.230.98.196', :SEK, :SE, :SV, :SE)
+
+        assert_match /^\d+$/, invoice_no
+      end
+
+      it 'should accept articles with Swedish characters' do
+        @order_items << @klarna.make_goods(4, 'ABC2', "Självlysande T-shirt 3", 7.00 * 100, 25, 0, :INC_VAT => true)
+        invoice_no = @klarna.add_transaction(
+          'USER-4304158399', 'ORDER-1', @order_items, 0, 0, ::Klarna::API::SHIPMENT_TYPES[:NORMAL], '4304158399', 'Karl', 'Lidin', @address_SE, '85.230.98.196', ::Klarna::API::CURRENCIES[:SEK], ::Klarna::API::COUNTRIES[:SE], ::Klarna::API::LANGUAGES[:SV], ::Klarna::API::PNO_FORMATS[:SE])
+
+        assert_match /^\d+$/, invoice_no
+      end
+
+      it 'should accept articles with strange characters' do
+    @order_items << @klarna.make_goods(11, 'ABC3', "T\u2013shirt 3", 17.00 * 100, 25, 0, :INC_VAT => true)
+        invoice_no = @klarna.add_transaction(
+          'USER-4304158399', 'ORDER-1', @order_items, 0, 0, ::Klarna::API::SHIPMENT_TYPES[:NORMAL], '4304158399', 'Karl', 'Lidin', @address_SE, '85.230.98.196', ::Klarna::API::CURRENCIES[:SEK], ::Klarna::API::COUNTRIES[:SE], ::Klarna::API::LANGUAGES[:SV], ::Klarna::API::PNO_FORMATS[:SE])
 
         assert_match /^\d+$/, invoice_no
       end

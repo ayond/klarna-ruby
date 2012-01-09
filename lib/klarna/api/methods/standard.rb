@@ -93,7 +93,7 @@ module Klarna
           goods = {
             :goods => {
               :artno     => article_no,
-              :title     => ::Klarna::API.encode(title),
+              :title     => make_encoding_compatible(title),
               :price     => price.to_i,
               :vat       => vat.to_f.round(2),
               :discount  => discount.to_f.round(2),
@@ -115,6 +115,12 @@ module Klarna
             pno_encoding
           ]
           self.call(:has_account, *params)
+        end
+
+        def make_encoding_compatible(string)
+          protocol_encoding = Encoding.find(::Klarna::API::PROTOCOL_ENCODING)
+          return string if Encoding.compatible?(string, "å".encode(protocol_encoding))
+          string.encode(protocol_encoding, :undef => :replace, :replace => '-').encode(string.encoding)
         end
 
       end

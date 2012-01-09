@@ -54,7 +54,6 @@ module Klarna
       end
 
       def call(service_method, *args)
-        encode_parameters(args)
         ::Klarna.log "Method: #{service_method}"
         ::Klarna.log "Params: %s" % self.add_meta_params(*args).inspect
 
@@ -70,10 +69,6 @@ module Klarna
         rescue ::Timeout::Error => e
           raise ::Klarna::API::KlarnaServiceError.new(-1, e.message)
         end
-      end
-
-      def encode_parameters(args)
-        args.collect! { |arg| arg.is_a?(String) ? ::Klarna::API.encode(arg) : arg }
       end
 
       def ssl?
